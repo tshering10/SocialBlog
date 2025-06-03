@@ -1,0 +1,180 @@
+{% extends "posts/base.html" %}
+
+{% block title %}Dashboard{% endblock title %}
+
+{% block content %}
+<div class="container-fluid">
+    <!-- Mobile Header with Hamburger -->
+    <div class="row d-md-none bg-white border-bottom">
+        <div class="col-12">
+            <div class="d-flex justify-content-between align-items-center p-3">
+                <h5 class="mb-0">Dashboard</h5>
+                <button class="btn btn-outline-secondary" type="button" data-bs-toggle="offcanvas" data-bs-target="#mobileSidebar">
+                    <i class="bi bi-list">Menu</i>
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <div class="row">
+        <!-- Desktop Sidebar -->
+        <div class="col-lg-3 col-md-4 d-none d-md-block bg-light sidebar ">
+            <div class="position-sticky pt-3">
+                <!-- User Profile Section -->
+                {% if user.is_authenticated %}
+                <div class="text-center mb-4 p-3 bg-white rounded shadow-sm">
+                    <div class="profile-avatar bg-secondary rounded-circle mx-auto mb-2 d-flex align-items-center justify-content-center" style="width: 60px; height: 60px;">
+                        <i class="bi bi-person-fill text-white fs-4"></i>
+                    </div>
+                    <h6 class="mb-0 text-dark">{{ user.fullName }}</h6>
+                    <small class="text-muted">{{ user.email }}</small>
+                </div>
+                {% endif %}
+
+                <!-- Navigation Menu -->
+                <nav class="nav flex-column">
+                    <div class="nav-section mb-3">
+                        <h6 class="nav-header text-muted text-uppercase small fw-bold px-3 mb-2">Main</h6>
+                        <a class="nav-link  d-flex align-items-center px-3 py-2" href="{% url "dashboard" %}" aria-current="page">
+                            <i class="bi bi-speedometer2 me-2"></i>
+                            Dashboard
+                        </a>
+                        <a class="nav-link d-flex align-items-center px-3 py-2" href="{% url "activeuser_post" %}">
+                            <i class="bi bi-file-text me-2"></i>
+                            My Posts
+                        </a>
+                        <a class="nav-link d-flex align-items-center px-3 py-2" href="{% url "create_post" %}">
+                            <i class="bi bi-plus-circle me-2"></i>
+                            New Post
+                        </a>
+                    </div>
+
+                    <div class="nav-section mb-3">
+                        <h6 class="nav-header text-muted text-uppercase small fw-bold px-3 mb-2">Account</h6>
+                        <a class="nav-link d-flex align-items-center px-3 py-2" href="#">
+                            <i class="bi bi-person me-2"></i>
+                            Profile
+                        </a>
+                        <a class="nav-link d-flex align-items-center px-3 py-2" href="#">
+                            <i class="bi bi-bell me-2"></i>
+                            Notifications
+                            <span class="badge bg-primary ms-auto"></span>
+                        </a>
+                        <a class="nav-link d-flex align-items-center px-3 py-2" href="#">
+                            <i class="bi bi-gear me-2"></i>
+                            Settings
+                        </a>
+                    </div>
+
+                    <div class="nav-section">
+                        <h6 class="nav-header text-muted text-uppercase small fw-bold px-3 mb-2">Other</h6>
+                        <a class="nav-link d-flex align-items-center px-3 py-2" href="#">
+                            <i class="bi bi-question-circle me-2"></i>
+                            Help
+                        </a>
+                        <a class="nav-link d-flex align-items-center px-3 py-2" href="{% url "logout" %}">
+                            <i class="bi bi-box-arrow-right me-2"></i>
+                            Logout
+                        </a>
+                    </div>
+            </div>
+        </div>
+
+        <!-- Main Content -->
+        <div class="col-lg-9 col-md-8 ms-sm-auto main-content">
+            <div class="px-3">
+                <!-- Header Section -->
+                <div class="row mb-4">
+                    <div class="col-12">
+                        <div class="d-flex justify-content-between align-items-center py-3 border-bottom">
+                            <div>
+                                <h1 class="h2 mb-0 text-dark fw-bold d-none d-md-block">Dashboard</h1>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+
+
+                <!-- Blog Posts Section -->
+                <div class="row">
+                    <div class="col-10">
+                        <div class="card border-0 shadow-sm">
+                <div class="card-header bg-white border-bottom">
+                    <div class="d-flex justify-content-between align-items-center">
+                        <h5 class="mb-0 text-dark">Your Blog Posts</h5>
+                        <a href="{% url "create_post" %}" class="btn btn-outline-dark btn-sm">
+                            <i class="bi bi-plus-circle me-1"></i>New Post
+                        </a>
+                    </div>
+                </div>
+                <div class="card-body p-0">
+                    {% if posts %}
+                        <div class="list-group list-group-flush">
+                            {% for post in posts %}
+                                <div class="list-group-item list-group-item-action border-0 py-3">
+                                    <div class="row align-items-center">
+                                        <div class="col-md-8">
+                                            <div class="d-flex align-items-start">
+                                                <div class="flex-shrink-0 me-3">
+                                                    <div class="bg-light rounded-circle d-flex align-items-center justify-content-center" style="width: 40px; height: 40px;">
+                                                        <i class="bi bi-file-text text-secondary"></i>
+                                                    </div>
+                                                </div>
+                                                <div class="flex-grow-1">
+                                                    <a href="{% url "post_detail" post.pk %}" class="text-decoration-none">
+                                                        <h6 class="mb-1 text-dark ">{{ post.title|default:post }}</h6>
+                                                    </a>
+                                                    <p class="text-muted mb-1 small">{{ post.content|default:"No description available"|truncatewords:15 }}</p>
+                                                    <small class="text-muted">
+                                                        <i class="bi bi-calendar me-1"></i>{{ post.created_at|default:"Recently" }}
+                                                    </small>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-4 text-md-end mt-2 mt-md-0">
+                                            <div class="btn-group btn-group-sm" role="group">
+
+                                                {% if request.user == post.author %}
+                                                    <a href="{% url "post_detail" post.pk %}" class="btn btn-outline-secondary">
+                                                        <i class="bi bi-eye"></i>
+                                                    </a>
+                                                    <a href="{% url 'edit_post' post.pk %}" class="btn btn-outline-secondary">
+                                                        <i class="bi bi-pencil"></i>
+                                                    </a>                                                   
+                                                    <a href="{% url "delete_post" post.pk %}"  class="btn btn-outline-danger">
+                                                        <i class="bi bi-trash"></i>
+                                                    </a>
+                                                {% else %}
+                                                    <a href="{% url "post_detail" post.pk %}" class="btn btn-outline-secondary">
+                                                        <i class="bi bi-eye"></i>
+                                                    </a>
+                                                {% endif %}
+                                                
+                                            </div>
+                                        </div>
+                                        
+                                    </div>
+                                </div>
+                            {% endfor %}
+                        </div>
+                    {% else %}
+                        <div class="text-center py-5">
+                            <i class="bi bi-file-text display-1 text-muted"></i>
+                            <h5 class="text-muted mt-3">No posts yet</h5>
+                            <p class="text-muted">Start by creating your first blog post</p>
+                            <button class="btn btn-dark">
+                                <i class="bi bi-plus-circle me-1"></i>Create First Post
+                            </button>
+                        </div>
+                    {% endif %}
+                </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+{% endblock content %}

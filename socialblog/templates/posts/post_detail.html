@@ -1,0 +1,29 @@
+{% extends "posts/base.html" %}
+{% block title %}{% endblock title %}
+{% block content %}
+<div class="container">
+    <h2>{{ post.author.fullName }}</h2>
+    <p><strong>Posted on:</strong> {{ post.created_at|date:"M d, Y H:i" }}</p>
+    {% if request.user == post.author %}
+        <div class="mb-3">
+            <div class="btn-group btn-group-sm" role="group">
+                <a href="{% url 'edit_post' post.pk %}" class="btn btn-outline-secondary">
+                    <i class="bi bi-pencil"></i>
+                </a> 
+
+                <a href="{% url "delete_post" post.pk %}"  class="btn btn-outline-danger">
+                    <i class="bi bi-trash"></i>
+                </a>                                    
+            </div>
+        </div>
+    {% endif %}
+                                       
+    <div style="border: 1px solid #ccc; padding: 10px;">
+        <p>{{ post.content }}</p>
+    </div>
+     
+</div>
+    
+
+{% endblock content %}
+
