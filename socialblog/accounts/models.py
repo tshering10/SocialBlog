@@ -1,4 +1,5 @@
 from django.db import models
+from django.conf import settings
 from django.contrib.auth.models import AbstractBaseUser, BaseUserManager, PermissionsMixin
 # Create your models here.
 
@@ -43,4 +44,17 @@ class CustomUser(AbstractBaseUser, PermissionsMixin):
     
     def __str__(self):
         return self.email
+
+
+#different profile picture path for every users
+def user_profile_path(instance, filename):
+    return f"profiles/user_{instance.user.id}/{filename}"
+
+class Profile(models.Model):
+    user = models.OneToOneField(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
+    profile_picture = models.ImageField(upload_to=user_profile_path, default="profiles/default.jpg", null=True, blank=True)
+    bio = models.TextField(max_length=300, blank=True)
+    created_at = models.DateTimeField(auto_now_add=True)
     
+    def __str__(self):
+        return f"{self.user.fullName}"

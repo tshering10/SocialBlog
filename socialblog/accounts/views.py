@@ -1,5 +1,5 @@
 from django.shortcuts import render, redirect
-from accounts.forms import RegisterForm, LoginForm
+from accounts.forms import RegisterForm, LoginForm, ProfileForm, UserForm
 from django.contrib import messages
 from django.contrib.auth import aauthenticate, login , logout
 
@@ -33,3 +33,27 @@ def logout_view(request):
     logout(request)
     messages.info(request, "You have been logged out!")
     return redirect('login')
+
+def profile_view(request):
+    profile = request.user.profile
+    return render(request, "accounts/view_profile.html", {"profile": profile})
+
+def profile_edit(request):
+    user = request.user
+    profile = user.profile #accessing profile from user
+    
+    if request.method == 'POST':
+        profile_form = ProfileForm(request.POST, request.FILES, instance=profile)
+        user_form = UserForm(request.POST, instance=user)
+        if profile_form.is_valid() and user_form.is_valid():
+            user_form.save()
+            profile_form.save()          
+    else:
+        profile_form = ProfileForm(instance=profile)
+        user_form = UserForm(instance=user)
+        
+    context= {
+        "profile_form": profile_form,
+        "user_form": user_form,
+    }
+    return render(request, "accounts/edit_profile.html", context)

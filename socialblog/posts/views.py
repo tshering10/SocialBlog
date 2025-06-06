@@ -1,5 +1,6 @@
 from django.shortcuts import render, redirect, get_object_or_404
 from posts.models import Post
+from accounts.models import Profile
 from posts.forms import PostForm
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required
@@ -8,14 +9,14 @@ from django.contrib.auth.decorators import login_required
 def home(request):
     return render(request, "posts/home.html")
 
+@login_required
 def dashboard(request):
     posts = Post.objects.all().order_by('-id')
-    
-    return render(request, "posts/dashboard.html", {'posts': posts})
+    profile, created = Profile.objects.get_or_create(user=request.user)
+    return render(request, "posts/dashboard.html", {'posts': posts, 'profile':profile})
 
 def post_detail_view(request, pk):
     post = get_object_or_404(Post, pk=pk)
-    
     return render(request, "posts/post_detail.html", {'post': post})
     
 def create_post_view(request):
@@ -50,9 +51,11 @@ def delete_post_view(request,pk):
     messages.info(request, "Your post has been deleted.")
     return redirect("dashboard")
 
+@login_required
 def activeuser_post_view(request):
     posts = Post.objects.filter(author=request.user).order_by('-created_at')
-    return render(request, "posts/user_post.html", {'posts':posts})
+    profile = Profile.objects.get(user=request.user)
+    return render(request, "posts/user_post.html", {'posts':posts, 'profile':profile})
 
 def about_us(request):
     return render(request, "posts/about_us.html")

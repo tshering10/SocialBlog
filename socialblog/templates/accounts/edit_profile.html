@@ -1,0 +1,96 @@
+{% extends "posts/base.html" %}
+{% load widget_tweaks %}
+
+{% block title %}Edit Profile{% endblock title %}
+
+{% block content %}
+<div class="container mt-4">
+    <div class="row justify-content-center">
+        <div class="col-md-8">
+            <!-- Header -->
+            <div class="d-flex align-items-center mb-4">
+                <a href="{% url 'profile' %}" class="btn btn-outline-secondary me-3">
+                    <i class="bi bi-arrow-left fs-6"></i>
+                </a>
+                <h4 class="mb-0">Edit Profile</h4>
+            </div>
+            
+            <div class="card">
+                <div class="card-body">
+                    <form method="post" enctype="multipart/form-data">
+                        {% csrf_token %}
+                        
+                        <!-- Current Profile Picture Preview -->
+                        {% if profile_form.instance.profile_picture and profile_form.instance.profile_picture.name != 'profiles/default.jpg' %}
+                            <div class="rounded-circle mx-auto mb-2 d-flex align-items-center justify-content-center" style="width: 100px; height: 100px; box-shadow: 0 0 0 2px #dee2e6;">
+                                <img src="{{ profile_form.instance.profile_picture.url }}" 
+                                     alt=" Profile Picture" 
+                                     class="rounded-circle" 
+                                     style="width: 100px; height: 100px; object-fit: cover;">          
+                            </div>
+                        {% else %}
+                            <div class="profile-avatar bg-secondary rounded-circle mx-auto mb-2 d-flex align-items-center justify-content-center"
+                             style="width: 100px; height: 100px;">
+                                <i class="bi bi-person-fill text-white fs-1"></i>
+                            </div>
+                        {% endif %}
+                
+                        <!-- Profile Form Fields -->
+                        <div class="row">
+                            <div class="col-12">
+                                <h6 class="text-muted mb-3">Profile Information</h6>
+                            </div>
+                            
+                            {% for field in profile_form %}
+                                <div class="col-md-{% if field.name == 'bio' %}12{% else %}6{% endif %} mb-3">
+                                    <label for="{{ field.id_for_label }}" class="form-label">
+                                        {{ field.label }}
+                                        {% if field.field.required %}<span class="text-danger">*</span>{% endif %}
+                                    </label>
+                                    
+                                    {% if field.name == 'profile_picture' %}
+                                        {{ field|add_class:"form-control" }}
+                                        <div class="form-text">Upload a new profile picture</div>
+                                    {% elif field.name == 'bio' %}
+                                        {{ field}}
+                                    {% else %}
+                                        {{ field|add_class:"form-control" }}
+                                    {% endif %}
+                                </div>
+                            {% endfor %}
+                        </div>
+                        
+                        <hr class="my-4">
+                        
+                        <!-- User Form Fields -->
+                        <div class="row">
+                            <div class="col-12">
+                                <h6 class="text-muted mb-3">Account Information</h6>
+                            </div>
+                            
+                            {% for field in user_form %}
+                                <div class="col-md-6 mb-3">
+                                    <label for="{{ field.id_for_label }}" class="form-label">
+                                        {{ field.label }}
+                                    </label>
+                                    {{ field|add_class:"form-control" }}
+                                </div>
+                            {% endfor %}
+                        </div>
+                       
+                        <!-- Action Buttons -->
+                        <div class="d-flex justify-content-between mt-4 pt-3 border-top">
+                            <a href="{% url 'profile' %}" class="btn btn-outline-dark">
+                                Cancel
+                            </a>
+                            <button type="submit" class="btn btn-dark px-4">
+                                Save Changes
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock content %}

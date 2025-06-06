@@ -1,6 +1,6 @@
 from django.contrib import admin
 from django.contrib.auth.admin import UserAdmin
-from accounts.models import CustomUser
+from accounts.models import CustomUser, Profile
 # Register your models here.
 
 class CustomUserAdmin(UserAdmin):
@@ -20,6 +20,9 @@ class CustomUserAdmin(UserAdmin):
             'fields': ('email', 'password1', 'password2'),
         }),
     )
-    ordering = ['email', 'id']
+    ordering = ['id','email']
     filter_horizontal = []  
 admin.site.register(CustomUser, CustomUserAdmin)
+
+
+admin.site.register(Profile)
