@@ -40,7 +40,7 @@ def edit_post_view(request , pk):
         if form.is_valid():
             form.save()
             messages.success(request, "Your post has been updated!")
-            return redirect("post_detail", post=post.pk)
+            return redirect("post_detail", pk=post.pk)
     else:
         form = PostForm(instance=post)
     return render(request, "posts/edit_post.html", {"form": form})
