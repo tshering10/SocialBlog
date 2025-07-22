@@ -18,7 +18,8 @@ def dashboard(request):
 def post_detail_view(request, pk):
     post = get_object_or_404(Post, pk=pk)
     return render(request, "posts/post_detail.html", {'post': post})
-    
+
+@login_required   
 def create_post_view(request):
     form = PostForm(request.POST)
     if request.method == 'POST':
