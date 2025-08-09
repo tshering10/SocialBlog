@@ -101,16 +101,9 @@ def like_post(request, post_id):
 
     return redirect('post_detail', pk=post.id)
 
-# def CommentView(request, post_id):
-#     post=get_object_or_404(Post, id=post_id)
-#     if request.method=="POST":
-#         form = CommentForm(request.POST)
-#         if form.is_valid():
-#             comment = form.save(commit=False)
-#             comment.user = request.user
-#             comment.post = post
-#             comment.save()
-#             return redirect("post_detail", post_id=post_id)
-#     else:
-#         form=CommentForm()
-#     return render(request, "posts/post_detail.html", {"form": form, 'post':post})
+@login_required
+def delete_comment_view(request,pk):
+    comment = get_object_or_404(Comment, pk=pk)
+    post_id = comment.post.id
+    comment.delete()
+    return redirect("post_detail", pk=post_id)

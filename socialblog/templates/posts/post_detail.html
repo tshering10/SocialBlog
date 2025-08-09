@@ -66,6 +66,15 @@
                     <strong>{{ comment.user.fullName }}</strong>
                     <small class="text-muted">{{ comment.created_at|date:"M d, Y H:i" }}</small>
                     <p>{{ comment.comment }}</p>
+
+                    <div class="d-flex px-1 gap-3">
+                        {% if user.is_authenticated and comment.user == user %}
+                            <a href="{% url "delete_comment" comment.id %}" class="text-decoration-none">Delete</a>
+                            <a href="#" class="text-decoration-none">Reply</a>
+                        {% else %}                         
+                            <a href="#" class="text-decoration-none">Reply</a>
+                        {% endif %}                        
+                    </div>
                 </div>
             {% endfor %}
         {% else %}
