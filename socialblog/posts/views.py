@@ -19,22 +19,35 @@ def dashboard(request):
 
 def post_detail_view(request, pk):
     post = get_object_or_404(Post, pk=pk)
-    comments = Comment.objects.filter(post=post)
-    if request.method=="POST":
+    comments = Comment.objects.filter(post=post, parent__isnull=True)
+         
+    if request.method == "POST":
         form = CommentForm(request.POST)
         if form.is_valid():
             comment = form.save(commit=False)
             comment.user = request.user
             comment.post = post
+                         
+            # Get parent comment id from post data
+            parent_id = request.POST.get('parent_id')
+            if parent_id:
+                try:
+                    parent_comment = Comment.objects.get(id=parent_id, post=post)
+                    comment.parent = parent_comment
+                except Comment.DoesNotExist:
+                    # Handle case where parent comment doesn't exist or doesn't belong to this post
+                    pass
+            
             comment.save()
             return redirect("post_detail", pk=post.pk)
     else:
         form = CommentForm()
+    
     return render(request, "posts/post_detail.html", {
         'post': post,
         "form": form,
         "comments": comments
-        })
+    })
 
 @login_required   
 def create_post_view(request):

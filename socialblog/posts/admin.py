@@ -12,4 +12,6 @@ class LikeAdmin(admin.ModelAdmin):
     list_display = ['user', 'post', 'liked_time']
 admin.site.register(Like, LikeAdmin)
 
-admin.site.register(Comment)
+class CommentAdmin(admin.ModelAdmin):
+    list_display = ['user','post', 'comment', 'created_at' ]
+admin.site.register(Comment,CommentAdmin)
